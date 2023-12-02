@@ -4,8 +4,8 @@ project(HWMX)
 
 include_directories("header/")
 
-set(SOURCES source/main.cpp source/matrix.cpp)
+set(SOURCES source/main.cpp)
 
-set(HEADERS header/matrix.h)
+set(HEADERS header/matrix.hpp)
 
 add_executable(HWMX ${SOURCES} ${HEADERS})

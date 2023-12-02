@@ -1,10 +1,12 @@
-#include <iostream>
+#include "matrix.hpp"
 
-#include <matrix.h>
+#include <iostream>
+#include <vector>
+
+using namespace std;
 
 int main()
 {
-	Matrix matrix;
-	std::cout << "Hello world" << std::endl;
+	Matrix<int> matrix(3, 3, 2);
 	return 0;
 }
