@@ -16,25 +16,24 @@ public:
 	Matrix(const Matrix& rhs);
 	Matrix(Matrix&& rhs);
 
-	//Matrix& operator=(const Matrix& rhs);
-	//Matrix& operator=(Matrix&& rhs) noexcept;
+	Matrix& operator=(const Matrix& rhs);
+	Matrix& operator=(Matrix&& rhs);
 
-	//~Matrix();
+	~Matrix();
 
 public:
 	size_t ncols() const;
 	size_t nrows() const;
 
-	//T trace() const;
-	//bool equal(const Matrix& other) const;
+	T trace() const;
+	bool equal(const Matrix& other) const;
 	//bool less(const Matrix& other) const;
 	//void dump(std::ostream& os) const;
 
 public:
 
-	//Matrix& negate()&;
-
-	//Matrix& transpose()&;
+	Matrix& negate()&;
+	Matrix& transpose()&;
 
 public:
 	struct ProxyRow
@@ -68,7 +67,6 @@ Matrix<T> Matrix<T>::eye(size_t cols, size_t rows)
 	return matrix;
 }
 
-
 template<typename T>
 Matrix<T>::Matrix(const Matrix& rhs):cols(rhs.ncols()),rows(rhs.nrows()),size(rhs.cols*rhs.rows)
 {
@@ -78,7 +76,7 @@ Matrix<T>::Matrix(const Matrix& rhs):cols(rhs.ncols()),rows(rhs.nrows()),size(rh
 	{
 		for (size_t j = 0; j < rows; ++j)
 		{
-			data[i*rows+j] = rhs[i][j];
+			data[i*rows+j] = rhs.data[i*rows+j];
 		}
 	}
 }
@@ -92,6 +90,36 @@ Matrix<T>::Matrix(Matrix&& rhs):cols(rhs.ncols()), rows(rhs.nrows()), size(rhs.c
 }
 
 template<typename T>
+Matrix<T>& Matrix<T>::operator=(const Matrix& rhs)
+{
+	cols = rhs.cols(), rows = rhs.rows(), size = rhs.cols() * rhs.rows();
+	delete[] data;
+	data = new T[size];
+	for (size_t i = 0; i < cols; ++i)
+	{
+		for (size_t j = 0; j < rows; ++j)
+		{
+			data[i * rows + j] = rhs.data[i * rows + j];
+		}
+	}
+}
+
+template<typename T>
+Matrix<T>& Matrix<T>::operator=(Matrix&& rhs)
+{
+	cols = rhs.cols(), rows = rhs.rows(), size = rhs.cols() * rhs.rows();
+	delete[] data;
+	data = rhs.data;
+	rhs.data = nullptr;
+}
+
+template<typename T>
+Matrix<T>::~Matrix()
+{
+	delete[] data;
+}
+
+template<typename T>
 size_t Matrix<T>::ncols()const
 {
 	return cols;
@@ -101,6 +129,61 @@ template<typename T>
 size_t Matrix<T>::nrows()const
 {
 	return rows;
+}
+
+template<typename T>
+T Matrix<T>::trace()const
+{
+	size_t place = 0;
+	T result = T{};
+	for (size_t i = 0; i < cols; ++i)
+	{
+		result += data[place];
+		place += rows + 1;
+	}
+	return result;
+}
+
+template<typename T>
+bool Matrix<T>::equal(const Matrix& other)const
+{
+	if (cols != other.cols || rows != other.rows)
+		return false;
+	for (size_t i = 0; i < cols; ++i)
+	{
+		for (size_t j = 0; j < rows; ++j)
+		{
+			if (data[i * rows + j] != other.data[i * rows + j])
+				return false;
+		}
+	}
+	return true;
+}
+
+template<typename T>
+Matrix<T>& Matrix<T>::negate()&
+{
+	for (size_t i = 0; i < cols; ++i)
+	{
+		for (size_t j = 0; j < rows; ++j)
+		{
+			data[i * rows + j] = -data[i * rows + j];
+		}
+	}
+	return *this;
+}
+
+template<typename T>
+Matrix<T>& Matrix<T>::transpose()&
+{
+	for (size_t i = 0; i < cols; ++i)
+	{
+		for (size_t j = i; j < rows; ++j)
+		{
+			std::swap(data[i*rows+j], data[j*rows+i]);
+		}
+	}
+	return *this;
 }
 
 template <typename T>
