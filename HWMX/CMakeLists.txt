@@ -8,4 +8,6 @@ set(SOURCES source/main.cpp)
 
 set(HEADERS header/matrix.hpp)
 
-add_executable(HWMX ${SOURCES} ${HEADERS})
+set(TESTS Tests.txt)
+
+add_executable(HWMX ${SOURCES} ${HEADERS} ${TESTS})

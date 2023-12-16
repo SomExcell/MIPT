@@ -44,8 +44,6 @@ public:
 	bool less(const Matrix& other) const;
 	//void dump(std::ostream& os) const;
 	int determinant();
-	int det(int* metrix, unsigned int n);
-	int* submatrix(int* matrix, unsigned int n, unsigned int x, unsigned int y);
 
 public:
 
@@ -65,6 +63,10 @@ public:
 		return  data + index * rows ;
 	}
 	
+private:
+	int det(int* metrix, unsigned int n);
+	int* submatrix(int* matrix, unsigned int n, unsigned int x, unsigned int y);
+
 private:
 	size_t cols = 0, rows = 0,size = 0;
 	T* data = nullptr;
@@ -206,8 +208,8 @@ bool Matrix<T>::less(const Matrix& other)const
 template<typename T>
 int* Matrix<T>::submatrix( int *matrix,unsigned int n, unsigned int x, unsigned int y)
 {
-	int* submatrix = new int [(n -1)*(n-1)];
-	int subi = 0;
+	int subi = 0,size = (n - 1) * (n - 1);
+	int* submatrix = new int [size];
 	for (int i = 0; i < n; i++) {
 		int subj = 0;
 		if (i == y) {
